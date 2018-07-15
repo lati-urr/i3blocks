@@ -15,7 +15,8 @@ not already yet
 Package  
 `sudo apt-get install -y upower xbacklight lm_sensors easy_install speedtest-cli alsa-utils`  
 Kernel  
-Enable I2C_CHARDEV and hardware Monitoring support in the kernel  
+Enable I2C_CHARDEV and hardware Monitoring support in the kernel
+
     Device Drivers  --->
         -*- I2C support  --->
 	        <*>   I2C device interface
@@ -32,6 +33,7 @@ Enable I2C_CHARDEV and hardware Monitoring support in the kernel
     emacs ~/.config/i3/config
 
 ~/.config/i3/config
+
     # Volume
     bindsym F3 exec amixer sset Master 3%+ && pkill -SIGRTMIN+1 i3blocks
     bindsym F2 exec amixer sset Master 3%- && pkill -SIGRTMIN+1 i3blocks
