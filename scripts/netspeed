@@ -1,0 +1,27 @@
+#!/bin/bash
+net_check=$(ping -c 1 -w 1 8.8.8.8)
+if [[ $? -gt 0 ]]; then
+    exit
+fi
+source ~/.config/i3blocks/scripts/gradation
+server=$(speedtest --list | grep Japan | sed -n 1P | awk '{print $1}')
+server=${server:0:-1}
+result=`speedtest --server $server --simple`
+downspeed=`echo $result | cut -d " " -f 5-6`
+set -- $downspeed
+down=$(echo $1 | sed s/\.[0-9,]*$//g)
+upspeed=`echo $result | cut -d " " -f 8-9`
+set -- $upspeed
+up=$(echo $1 | sed s/\.[0-9,]*$//g)
+echo "D:$downspeed U:$upspeed"
+echo "D:$downspeed U:$upspeed"
+if [[ $down -ge 200 ]]; then
+    echo "#ffc0ff"
+elif [[ $down -ge 100 ]]; then
+    down=$(expr $down - 100)
+    gradate 40afff 00ffff 100 $down
+elif [[ $down -ge 10 ]]; then
+    gradate f0ff4b 30ffbb 100 $down
+else
+    echo "#af60ff"
+fi

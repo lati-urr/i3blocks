@@ -1,0 +1,20 @@
+#!/bin/bash
+source ~/.config/i3blocks/scripts/gradation
+load=`cat /proc/loadavg | awk '{print $1}'`
+cpu=`nproc`
+echo $load
+echo $load
+load=$(echo "$load * 100"|bc)
+if [ "$(echo "$load == 0"|bc)" -eq 1 ]; then
+    load=0
+else
+    load=$(echo $load | sed s/\.[0-9,]*$//g)
+fi
+if [[ $load -ge 400 ]];then
+    echo "#ff0000"
+elif [[ $load -ge 100 ]];then
+    load=$(expr $load - 100)
+    gradate ffff00 ff0000 300 $load
+else
+    gradate 00fff0 f0ef40 100 $load
+fi

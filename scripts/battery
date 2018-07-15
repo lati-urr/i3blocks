@@ -1,0 +1,33 @@
+#!/bin/bash
+source ~/.config/i3blocks/scripts/gradation
+filelist=`upower -e | grep BAT`
+energy=0
+energyfull=0
+while read line
+do
+    energy=$(echo $energy + `echo $(upower -i $line | grep energy: | awk '{print $2}')`| bc )
+    energyfull=$(echo $energyfull + `echo $(upower -i $line | grep energy-full: | awk '{print $2}')`| bc )
+    state=`echo $(upower -i $line | grep state |awk '{print $2}')`
+done <<END
+$filelist
+END
+percentage=`echo "scale=2; $energy *100 / $energyfull" | bc`
+npercentage=${percentage%.*}
+if [[ $state = "discharging" ]]; then
+    echo "⚡$percentage%"
+    echo "⚡$percentage%"
+    if [[ $npercentage -ge 50 ]]; then
+	npercentage=$(expr $npercentage - 50)
+	gradate ffff00 00ff00 50 $npercentage
+    else
+	gradate ff0000 ffff00 50 $npercentage
+    fi
+elif [[ $state = "charging" ]]; then
+    echo "🔌$percentage%"    
+    echo "🔌$percentage%"    
+    gradate 80ff00 00ff00 100 $npercentage
+elif [[ $state = "fully-charged" ]]; then
+    echo "🔌FULL"
+    echo "🔌FULL"
+    echo "#00ff00"
+fi

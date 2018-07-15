@@ -1,0 +1,8 @@
+#!/bin/sh
+source ~/.config/i3blocks/scripts/gradation
+brightnes=`xbacklight`
+percent=${brightnes%.*}
+echo $percent
+echo $percent
+gradate 99ff55 ffffa0 100 $percent
+

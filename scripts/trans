@@ -1,0 +1,61 @@
+#!/bin/bash
+source ~/.config/i3blocks/scripts/gradation
+if [[ -n $BLOCK_INSTANCE ]]; then
+    INTERFACE=$BLOCK_INSTANCE
+else
+    exit
+fi
+net_info=`grep $INTERFACE /proc/net/dev | awk '{print $2" "$10}'`
+receiver=`echo $net_info | awk '{print $1}'`
+transmitter=`echo $net_info | awk '{print $2}'`
+if [[ $receiver -lt 1048576 ]]; then
+    exit
+fi
+PREV_FILE="/tmp/.transinfo$INTERFACE"
+if [[ -f "${PREV_FILE}" ]]; then
+    PREV_CONT=$(cat "${PREV_FILE}")
+    PREV_IN=$(echo "${PREV_CONT}" | head -n 1)
+    PREV_OUT=$(echo "${PREV_CONT}" | tail -n 1)
+else
+    `touch /tmp/.transinfo$INTERFACE`
+    PREV_IN=0
+    PREV_OUT=0
+fi
+BYTE_IN=`echo "$receiver-$PREV_IN"| bc`
+BYTE_OUT=`echo "$transmitter-$PREV_OUT"| bc`
+function FormatTraffic() {
+    if [[ "${1}" -lt 10 ]]; then
+	echo "    ${1}""B/s"
+    elif [[ "${1}" -lt 100 ]]; then
+	echo "   ${1}""B/s"
+    elif [[ "${1}" -lt 1000 ]]; then
+	echo "  ${1}""B/s"
+    elif [[ "${1}" -lt 1048576 ]]; then
+	echo $(echo "scale=1;${1}/1024" | bc -l)"K/s"
+    else
+	echo $(echo "scale=1;${1}/1048576" | bc -l)"M/s"
+    fi
+}
+function FormatTraffic() {
+    if [[ "${1}" -lt 1000 ]]; then
+	printf "%5sB/s" ${1}
+    elif [[ "${1}" -lt 1024000 ]]; then
+	printf "%5sK/s" $(echo "scale=1;${1}/1024" | bc -l)
+    else
+	printf "%5sM/s" $(echo "scale=1;${1}/1048576" | bc -l)
+    fi
+}
+TEXT_IN=$(FormatTraffic "${BYTE_IN}")
+TEXT_OUT=$(FormatTraffic "${BYTE_OUT}")
+TOTAL_IN=`echo $(echo "scale=2;$receiver/1073741824"| bc -l| sed -e 's/^\./0./g')"G"`
+TOTAL_OUT=`echo $(echo "scale=2;$transmitter/1073741824"| bc -l| sed -e 's/^\./0./g')"G"`
+echo "$TEXT_IN[$TOTAL_IN] $TEXT_OUT[$TOTAL_OUT]"
+echo "$TEXT_IN[$TOTAL_IN] $TEXT_OUT[$TOTAL_OUT]"
+receiver_G=$(expr $receiver / 1073741824)
+if [ $receiver_G -ge 10 ]; then
+    echo "#ff80ff"
+else
+    gradate 00ffff ff80ff 10 $receiver_G
+fi
+echo "${receiver}" > "${PREV_FILE}"
+echo "${transmitter}" >> "${PREV_FILE}"

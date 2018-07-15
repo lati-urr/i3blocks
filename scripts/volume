@@ -1,0 +1,17 @@
+#!/bin/bash
+source ~/.config/i3blocks/scripts/gradation
+if [[ "${BLOCK_BUTTON}" -eq 1 ]]; then
+    amixer -q sset Master toggle
+fi
+statusLine=$(amixer get Master | tail -n 1)
+status=$(echo "${statusLine}" | grep -wo "on")
+volume=$(echo "${statusLine}" | awk -F ' ' '{print $5}' | tr -d '[]%')
+if [[ "${status}" == "on" ]]; then
+    echo "🔉 ${volume}%"
+    echo "🔉 ${volume}%"
+    gradate 30ff80 3080ff 100 $volume
+else
+    echo "🔇 Mute"
+    echo "🔇 off"
+    echo "#ff3070"
+fi

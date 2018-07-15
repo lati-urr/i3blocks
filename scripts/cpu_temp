@@ -1,0 +1,19 @@
+#!/bin/sh
+source ~/.config/i3blocks/scripts/gradation
+TEMP=`sensors | grep Core | awk '{print $3}' | head -n1`
+unsigned_TEMP=${TEMP:1}
+nTEMP=${unsigned_TEMP%.*}
+echo $nTEMP ℃
+echo $nTEMP ℃
+if [[ $nTEMP -le 60 ]]; then
+    echo "#00ff00"
+elif [[ $nTEMP -le 80 ]]; then
+    nTEMP=$(expr $nTEMP - 60)
+    gradate ffff00 00ff00 20 $nTEMP
+elif [[ $nTEMP -le 100 ]]; then
+    nTEMP=$(expr $nTEMP - 80)
+    gradate ff0000 ffff00 20 $nTEMP
+else
+    exit 33;
+fi
+

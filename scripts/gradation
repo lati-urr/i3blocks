@@ -1,0 +1,35 @@
+#!/bin/sh
+
+#原色，目的色，段階数，段階の4引数をとって，RGB値を返す
+
+function geometric {
+    start_color=$(printf "%d\n" 0x$1)
+    quit_color=$(printf "%d\n" 0x$2)
+    lank_num=$3
+    lank=$4
+    if [[ $start_color -ge $quit_color ]];then
+	result_10=$(echo "$start_color-($start_color - $quit_color)*$lank / $lank_num"| bc)
+    else
+	result_10=$(echo "($quit_color - $start_color)* $lank / $lank_num + $start_color"| bc)
+    fi
+    if [[ $result_10 -lt 16 ]];then
+	result_16=0$(printf "%x\n" $result_10)
+    else
+	result_16=$(printf "%x\n" $result_10)
+    fi
+    echo $result_16
+}
+
+function gradate {
+    start_R=$(echo $1 | cut -c 1-2)
+    start_G=$(echo $1 | cut -c 3-4)
+    start_B=$(echo $1 | cut -c 5-6)
+    quit_R=$(echo $2 | cut -c 1-2)
+    quit_G=$(echo $2 | cut -c 3-4)
+    quit_B=$(echo $2 | cut -c 5-6)
+    color_R=$(geometric $start_R $quit_R $3 $4)
+    color_G=$(geometric $start_G $quit_G $3 $4)
+    color_B=$(geometric $start_B $quit_B $3 $4)
+    color=\#$color_R$color_G$color_B
+    echo $color
+}

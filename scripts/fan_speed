@@ -1,0 +1,16 @@
+#!/bin/sh
+FAN_SPEED=`sensors | grep fan | awk '{print $2}'`
+if [[  $FAN_SPEED -eq 0 ]]; then
+    exit
+else
+    echo $FAN_SPEED RPM
+    echo $FAN_SPEED RPM
+    if [[ $FAN_SPEED -lt 3500 ]]; then
+	echo "#ff00ff"
+    elif [[ $FAN_SPEED -lt 5000 ]]; then
+	echo "#aaff00"
+    else
+	echo "#ffa0a0"
+    fi
+fi
+

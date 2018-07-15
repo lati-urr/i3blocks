@@ -1,0 +1,15 @@
+#!/bin/sh
+source ~/.config/i3blocks/scripts/gradation
+top=`top -n 2 -b -d 1 | grep %Cpu | tail -n 1 `
+usr=`echo $top | awk '{print $2}'`
+sys=`echo $top | awk '{print $4}'`
+CPU=$(echo $usr + $sys | bc)
+nCPU=${CPU%.*}
+echo $CPU%
+echo $CPU%
+if [[ $nCPU -ge 60 ]];then
+    nCPU=$(expr $nCPU - 60)
+    gradate ff80ff ff0000 40 $nCPU
+else
+    gradate 00ff00 00ffff 60 $nCPU
+fi

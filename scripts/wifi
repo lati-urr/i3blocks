@@ -1,0 +1,36 @@
+#!/bin/bash
+
+source ~/.config/i3blocks/scripts/gradation
+
+if [[ -n $BLOCK_INSTANCE ]]; then
+    INTERFACE_NET=$BLOCK_INSTANCE
+else
+    exit
+fi
+
+INTERFACE_NET="wlp3s0"
+IP_RESULT=$(ifconfig $INTERFACE_NET | grep inet)
+if [[ -z $IP_RESULT ]];then
+    echo "Down"
+    echo "Down"
+    echo "#ff0030"
+    exit
+fi
+IP_ADDRESS=$(echo $IP_RESULT | awk '{print $2}')
+ssid=`nmcli | grep $INTERFACE_NET: | awk '{print $4}'`
+quality=`cat /proc/net/wireless | grep $INTERFACE_NET | awk '{print $3}'`
+if [[ $quality != "" ]];then
+    quality=`echo "$quality*100/70"|bc`
+    quality_text=$quality%
+else
+    quality=100
+fi
+echo "$ssid $quality_text($IP_ADDRESS)"
+echo "$ssid $quality_text"
+
+if [[ $quality -ge 50 ]];then
+    quality=$(expr $quality - 50)
+    gradate ffff00 00ff00 50 $quality
+else
+    gradate ff0000 ffff00 50 $quality
+fi

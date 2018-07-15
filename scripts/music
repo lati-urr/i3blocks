@@ -1,0 +1,17 @@
+#!/bin/sh
+song=`audtool current-song`
+length=`audtool current-song-length`
+now=`audtool current-song-output-length`
+text="$song ($now/$length)"
+if [[ "${BLOCK_BUTTON}" -eq 1 ]]; then
+    audtool playback-pause
+elif [[ "${BLOCK_BUTTON}" -eq 2 ]]; then
+    audtool playlist-reverse
+elif [[ "${BLOCK_BUTTON}" -eq 3 ]]; then
+    audtool playlist-advance
+fi
+if ! [[ -z ${song} ]]; then
+    echo -e "$text"
+    echo -e "$text"
+    echo "#fbc0f0"
+fi
