@@ -5,7 +5,8 @@ HOME_capacity=$(df -h -P -l "$DIR" | tail -n +2)
 empty=$(echo $HOME_capacity | awk '{print $4}')
 echo $empty
 echo $empty
-used_percentage=$(echo $HOME_capacity | awk '{print $5}')
-used_percentage=${used_percentage:0:-1}
-empty_percentage=$(expr 100 - $(echo $used_percentage))
-gradate ff2244 ffaaff 100 $empty_percentage
+echo "#ffaaff"
+# used_percentage=$(echo $HOME_capacity | awk '{print $5}')
+# used_percentage=${used_percentage:0:-1}
+# empty_percentage=$(expr 100 - $(echo $used_percentage))
+# gradate ff2244 ffaaff 100 $empty_percentage
